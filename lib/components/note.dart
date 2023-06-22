@@ -3,43 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:to_do_list_app/services/task_service.dart';
 
-class _Checkbox extends StatefulWidget {
-  final bool isChecked;
-  final ValueChanged<bool?> onChanged;
-  const _Checkbox({Key? key, required this.isChecked, required this.onChanged}) : super(key: key);
-
-  @override
-  State<_Checkbox> createState() => _CheckboxState();
-}
-
-class _CheckboxState extends State<_Checkbox> {
-  bool isChecked = false;
-
-  @override
-  void initState() {
-    isChecked = widget.isChecked;
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Checkbox(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      activeColor: Colors.green,
-      checkColor: Colors.white,
-      value: isChecked,
-      onChanged: (bool? value) {
-        widget.onChanged;
-        setState(() {
-          isChecked = value!;
-        });
-      },
-    );
-  }
-}
-
+// ignore: must_be_immutable
 class Note extends StatelessWidget {
-  const Note({super.key});
+  bool isChecked = false;
+  final _updateFormKey = GlobalKey<FormState>();
+  final updatedTaskTitle = TextEditingController(), updatedTaskDesc = TextEditingController();
+
+  Note({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -83,9 +53,13 @@ class Note extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(0, 5, 5, 0),
                             child: Align(
                               alignment: Alignment.topRight,
-                              child: _Checkbox(
-                                isChecked: task.isChecked,
-                                onChanged: (value) {
+                              child: Checkbox(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                activeColor: Colors.green,
+                                checkColor: Colors.white,
+                                value: isChecked,
+                                onChanged: (bool? value) {
+                                  isChecked = value!;
                                   completeTask('KOBMWD0vjZPcee7Nu2ZUthhX2JH3', task.id, value);
                                 },
                               ),
@@ -106,14 +80,75 @@ class Note extends StatelessWidget {
                               Material(
                                 color: Colors.transparent,
                                 child: IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    updatedTaskTitle.text = task.title;
+                                    updatedTaskDesc.text = task.description;
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text('Edit Task', style: TextStyle(fontWeight: FontWeight.bold)),
+                                          content: Form(
+                                            key: _updateFormKey,
+                                            child: SizedBox(
+                                              width: 300,
+                                              height: 500,
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                children: [
+                                                  TextFormField(
+                                                    controller: updatedTaskTitle,
+                                                    validator: (value) =>
+                                                        value?.isEmpty ?? true ? 'Please enter a valid title' : null,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 450,
+                                                    child: SingleChildScrollView(
+                                                      child: TextFormField(
+                                                        controller: updatedTaskDesc,
+                                                        maxLines: null,
+                                                        validator: (value) => value?.isEmpty ?? true
+                                                            ? 'Please enter a valid description'
+                                                            : null,
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text('Cancel'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                if (_updateFormKey.currentState?.validate() ?? false) {
+                                                  updateTask('KOBMWD0vjZPcee7Nu2ZUthhX2JH3', task.id,
+                                                      updatedTaskTitle.text, updatedTaskDesc.text);
+                                                  Navigator.of(context).pop();
+                                                  updatedTaskTitle.clear();
+                                                  updatedTaskDesc.clear();
+                                                }
+                                              },
+                                              child: const Text('Save'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
                                   icon: const Icon(Icons.edit, color: Colors.amber, size: 21.0),
                                   splashRadius: 20,
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 190.0),
-                                child: Text(DateFormat('dd-MM-yyyy').format(task.createdAt)),
+                              const Spacer(),
+                              Text(DateFormat('dd-MM-yyyy HH:mm:ss').format(task.updatedAt)),
+                              const SizedBox(
+                                width: 12.0,
                               )
                             ],
                           ),
@@ -162,8 +197,13 @@ class Note extends StatelessWidget {
     await taskRef.delete();
   }
 
-  Future<void> completeTask(String uid, String taskId, bool? isChecked) async {
+  Future<void> completeTask(String uid, String taskId, bool isChecked) async {
     final taskRef = getTaskRef(uid).doc(taskId);
     await taskRef.update({'isChecked': isChecked});
+  }
+
+  Future<void> updateTask(String uid, String taskId, String taskTitle, String taskDesc) async {
+    final taskRef = getTaskRef(uid).doc(taskId);
+    await taskRef.update({'title': taskTitle, 'description': taskDesc, 'updatedAt': DateTime.now()});
   }
 }

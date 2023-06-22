@@ -39,15 +39,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 validator: (value) => value?.isEmpty ?? true ? 'Please enter a valid title' : null,
               ),
-              TextFormField(
-                controller: _descControl,
-                maxLines: null,
-                decoration: const InputDecoration(
-                  hintText: 'Enter Description',
-                  hintStyle: TextStyle(color: Colors.black26),
-                  border: InputBorder.none,
+              SizedBox(
+                height: 500,
+                child: SingleChildScrollView(
+                  child: TextFormField(
+                    controller: _descControl,
+                    maxLines: null,
+                    decoration: const InputDecoration(
+                      hintText: 'Enter Description',
+                      hintStyle: TextStyle(color: Colors.black26),
+                      border: InputBorder.none,
+                    ),
+                    validator: (value) => value?.isEmpty ?? true ? 'Please enter a valid description' : null,
+                  ),
                 ),
-                validator: (value) => value?.isEmpty ?? true ? 'Please enter a valid description' : null,
               ),
               const Spacer(),
               Align(
@@ -67,9 +72,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ]),
           ),
         ),
-        const Expanded(
+        Expanded(
           child: Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Note(),
           ),
         ),
