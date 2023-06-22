@@ -25,7 +25,18 @@ class _HomeScreenState extends State<HomeScreen> {
           width: 300.0,
           margin: const EdgeInsets.all(16.0),
           padding: const EdgeInsets.all(24.0),
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16.0)),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.4),
+                spreadRadius: 3,
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              )
+            ],
+          ),
           child: Form(
             key: _formKey,
             child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
@@ -40,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 validator: (value) => value?.isEmpty ?? true ? 'Please enter a valid title' : null,
               ),
               SizedBox(
-                height: 500,
+                height: 450,
                 child: SingleChildScrollView(
                   child: TextFormField(
                     controller: _descControl,

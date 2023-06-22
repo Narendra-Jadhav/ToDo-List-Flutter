@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:to_do_list_app/models/task.dart';
 import 'package:to_do_list_app/services/task_service.dart';
 
 // ignore: must_be_immutable
 class Note extends StatelessWidget {
-  bool isChecked = false;
   final _updateFormKey = GlobalKey<FormState>();
   final updatedTaskTitle = TextEditingController(), updatedTaskDesc = TextEditingController();
 
@@ -37,17 +37,41 @@ class Note extends StatelessWidget {
                 );
               } else {
                 // Display the tasks
+                List<Task> sortedTasks = [...tasks]; // Create a copy of the tasks list
+                sortedTasks.sort((a, b) {
+                  // Sort the tasks based on isChecked and updatedAt properties
+                  if (a.isChecked == b.isChecked) {
+                    // If both tasks have the same isChecked value, sort by updatedAt
+                    return b.updatedAt.compareTo(a.updatedAt);
+                  } else {
+                    // Sort the tasks with unchecked tasks first, followed by checked tasks
+                    return a.isChecked ? 1 : -1;
+                  }
+                });
+
                 return GridView.builder(
                   itemCount: tasks.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3, crossAxisSpacing: 15, mainAxisSpacing: 15, childAspectRatio: 1.9),
                   itemBuilder: (context, index) {
-                    final task = tasks[index];
+                    final task = sortedTasks[index];
+                    bool isChecked = task.isChecked;
 
                     return Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Container(
-                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16.0)),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.4),
+                              spreadRadius: 3,
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
+                            )
+                          ],
+                        ),
                         child: GridTile(
                           header: Padding(
                             padding: const EdgeInsets.fromLTRB(0, 5, 5, 0),
@@ -157,9 +181,22 @@ class Note extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(task.title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                Text(
+                                  task.title,
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: isChecked ? Colors.black38 : Colors.black),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
                                 const SizedBox(height: 10),
-                                Text(task.description, style: const TextStyle(fontSize: 15)),
+                                Text(
+                                  task.description,
+                                  style: TextStyle(fontSize: 15, color: isChecked ? Colors.black38 : Colors.black),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 5,
+                                ),
                               ],
                             ),
                           ),
