@@ -122,15 +122,17 @@ class Note extends StatelessWidget {
                                                 children: [
                                                   TextFormField(
                                                     controller: updatedTaskTitle,
+                                                    decoration: const InputDecoration(labelText: 'Title'),
                                                     validator: (value) =>
                                                         value?.isEmpty ?? true ? 'Please enter a valid title' : null,
                                                   ),
                                                   SizedBox(
-                                                    height: 450,
+                                                    height: 400,
                                                     child: SingleChildScrollView(
                                                       child: TextFormField(
                                                         controller: updatedTaskDesc,
                                                         maxLines: null,
+                                                        decoration: const InputDecoration(labelText: 'Description'),
                                                         validator: (value) => value?.isEmpty ?? true
                                                             ? 'Please enter a valid description'
                                                             : null,
