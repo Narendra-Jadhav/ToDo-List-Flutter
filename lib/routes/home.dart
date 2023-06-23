@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_list_app/components/note.dart';
+import 'package:to_do_list_app/routes/login.dart';
+import 'package:to_do_list_app/services/user_service.dart';
 
 import '../models/task.dart';
 import '../services/task_service.dart';
@@ -17,9 +20,39 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // final user = FirebaseAuth.instance.currentUser;
+    // final uid = user?.uid;
+    // if (uid != null) {
+    //   final username = getUserRef(uid).get().data();
+    // }
+
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      appBar: AppBar(title: const Text('ToDo List')),
+      appBar: AppBar(
+        title: Row(
+          children: [
+            const Text('ToDo List'),
+            const Spacer(),
+            const Text('Hello, Username'),
+            const SizedBox(width: 20),
+            IconButton(
+              onPressed: () {
+                AuthService().signOut();
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                  return Login(
+                    context: context,
+                  );
+                }));
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logged Out Successfully!')));
+              },
+              icon: const Icon(
+                Icons.logout,
+                color: Colors.white,
+              ),
+            )
+          ],
+        ),
+      ),
       body: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Container(
           width: 300.0,
@@ -94,13 +127,23 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void postTask() async {
-    await getTaskRef('KOBMWD0vjZPcee7Nu2ZUthhX2JH3').add(Task(
-      id: '',
-      title: _titleControl.text,
-      description: _descControl.text,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      isChecked: false,
-    ));
+    final user = FirebaseAuth.instance.currentUser;
+    final uid = user?.uid;
+
+    if (uid != null) {
+      await getTaskRef(uid).add(Task(
+        id: '',
+        title: _titleControl.text,
+        description: _descControl.text,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        isChecked: false,
+      ));
+
+      print('Task added!');
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Task added!')));
+    } else {
+      print('Task not added');
+    }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -17,6 +18,8 @@ class Note extends StatelessWidget {
       child: Consumer(
         builder: (context, ref, child) {
           final tasksSnapshot = ref.watch(tasksProvider);
+          final user = FirebaseAuth.instance.currentUser;
+          final uid = user?.uid;
 
           return tasksSnapshot.when(
             data: (tasks) {
@@ -84,7 +87,9 @@ class Note extends StatelessWidget {
                                 value: isChecked,
                                 onChanged: (bool? value) {
                                   isChecked = value!;
-                                  completeTask('KOBMWD0vjZPcee7Nu2ZUthhX2JH3', task.id, value);
+                                  if (uid != null) {
+                                    completeTask(uid, task.id, value);
+                                  }
                                 },
                               ),
                             ),
@@ -95,7 +100,9 @@ class Note extends StatelessWidget {
                                 color: Colors.transparent,
                                 child: IconButton(
                                   onPressed: () {
-                                    deleteTask('KOBMWD0vjZPcee7Nu2ZUthhX2JH3', task.id);
+                                    if (uid != null) {
+                                      deleteTask(uid, task.id);
+                                    }
                                   },
                                   icon: const Icon(Icons.delete, color: Colors.amber, size: 21.0),
                                   splashRadius: 20,
@@ -153,8 +160,10 @@ class Note extends StatelessWidget {
                                             TextButton(
                                               onPressed: () {
                                                 if (_updateFormKey.currentState?.validate() ?? false) {
-                                                  updateTask('KOBMWD0vjZPcee7Nu2ZUthhX2JH3', task.id,
-                                                      updatedTaskTitle.text, updatedTaskDesc.text);
+                                                  if (uid != null) {
+                                                    updateTask(uid, task.id,
+                                                        updatedTaskTitle.text, updatedTaskDesc.text);
+                                                  }
                                                   Navigator.of(context).pop();
                                                   updatedTaskTitle.clear();
                                                   updatedTaskDesc.clear();
