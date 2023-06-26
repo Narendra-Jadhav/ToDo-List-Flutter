@@ -5,15 +5,23 @@ import 'package:to_do_list_app/routes/home.dart';
 import 'package:to_do_list_app/routes/login.dart';
 import 'package:to_do_list_app/services/user_service.dart';
 
-class SignUp extends StatelessWidget {
+class SignUp extends StatefulWidget {
+  final BuildContext context;
+
+  const SignUp({super.key, required this.context});
+
+  @override
+  State<SignUp> createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUp> {
   final _signupFormKey = GlobalKey<FormState>();
+
   final _nameController = TextEditingController(),
       _emailController = TextEditingController(),
       _passwordController = TextEditingController();
 
-  final BuildContext context;
-
-  SignUp({super.key, required this.context});
+  bool _showPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -61,8 +69,18 @@ class SignUp extends StatelessWidget {
                 TextFormField(
                   controller: _passwordController,
                   validator: (value) => value?.isEmpty ?? true ? 'Please enter your password' : null,
-                  obscureText: true,
-                  decoration: const InputDecoration(labelText: 'Password'),
+                  obscureText: !_showPassword,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _showPassword = !_showPassword;
+                        });
+                      },
+                      icon: Icon(_showPassword ? Icons.visibility : Icons.visibility_off),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
@@ -118,9 +136,9 @@ class SignUp extends StatelessWidget {
 
         await getUserRef(uid).set(newUser);
         print('New User added successfully!');
-        
+
         Navigator.pushAndRemoveUntil(
-          context,
+          widget.context,
           MaterialPageRoute(
             builder: (context) {
               return const HomeScreen();
@@ -133,7 +151,7 @@ class SignUp extends StatelessWidget {
       }
     } catch (e) {
       print('Error: $e');
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Enter correct credentials!')));
+      ScaffoldMessenger.of(widget.context).showSnackBar(const SnackBar(content: Text('Enter correct credentials!')));
     }
   }
 }
