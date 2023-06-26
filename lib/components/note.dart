@@ -100,11 +100,35 @@ class Note extends StatelessWidget {
                                 color: Colors.transparent,
                                 child: IconButton(
                                   onPressed: () {
-                                    if (uid != null) {
-                                      deleteTask(uid, task.id);
-                                    }
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: SizedBox(
+                                              width: 350,
+                                              child: Text(task.title,
+                                                  style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+                                            ),
+                                            content: SizedBox(
+                                                width: 350,
+                                                child: SingleChildScrollView(child: Text(task.description))),
+                                            actions: [
+                                              IconButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                icon: const Icon(
+                                                  Icons.close,
+                                                  color: Colors.amber,
+                                                  size: 21.0,
+                                                ),
+                                                splashRadius: 20,
+                                              )
+                                            ],
+                                          );
+                                        });
                                   },
-                                  icon: const Icon(Icons.delete, color: Colors.amber, size: 21.0),
+                                  icon: const Icon(Icons.zoom_out_map, color: Colors.amber, size: 21.0),
                                   splashRadius: 20,
                                 ),
                               ),
@@ -161,8 +185,8 @@ class Note extends StatelessWidget {
                                               onPressed: () {
                                                 if (_updateFormKey.currentState?.validate() ?? false) {
                                                   if (uid != null) {
-                                                    updateTask(uid, task.id,
-                                                        updatedTaskTitle.text, updatedTaskDesc.text);
+                                                    updateTask(
+                                                        uid, task.id, updatedTaskTitle.text, updatedTaskDesc.text);
                                                   }
                                                   Navigator.of(context).pop();
                                                   updatedTaskTitle.clear();
@@ -180,6 +204,18 @@ class Note extends StatelessWidget {
                                   splashRadius: 20,
                                 ),
                               ),
+                              Material(
+                                color: Colors.transparent,
+                                child: IconButton(
+                                  onPressed: () {
+                                    if (uid != null) {
+                                      deleteTask(uid, task.id);
+                                    }
+                                  },
+                                  icon: const Icon(Icons.delete, color: Colors.amber, size: 21.0),
+                                  splashRadius: 20,
+                                ),
+                              ),
                               const Spacer(),
                               Text(DateFormat('dd-MM-yyyy HH:mm:ss').format(task.updatedAt)),
                               const SizedBox(
@@ -188,7 +224,7 @@ class Note extends StatelessWidget {
                             ],
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(20),
+                            padding: const EdgeInsets.fromLTRB(20, 20, 30, 20),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [

@@ -4,13 +4,6 @@ import 'package:to_do_list_app/services/user_service.dart';
 
 import '../models/task.dart';
 
-// final tasksProvider = StreamProvider<List<Task>?>((ref) async* {
-//   final uid = ref.watch(uidProvider);
-//   await for (final tasks in getTaskRef(uid).snapshots()) {
-//     yield tasks.docs.map((taskDoc) => taskDoc.data()).toList();
-//   }
-// });
-
 final tasksProvider = StreamProvider<List<Task>?>((ref) async* {
   final user = ref.watch(authProvider).asData?.value;
   if (user == null) {

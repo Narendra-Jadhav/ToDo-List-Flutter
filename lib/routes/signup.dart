@@ -19,7 +19,9 @@ class SignUp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      appBar: AppBar(title: const Text('ToDo List')),
+      appBar: AppBar(
+        title: const Text('ToDo List'),
+      ),
       body: Align(
         alignment: Alignment.center,
         child: Container(
@@ -62,19 +64,26 @@ class SignUp extends StatelessWidget {
                   obscureText: true,
                   decoration: const InputDecoration(labelText: 'Password'),
                 ),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
                     if (_signupFormKey.currentState?.validate() ?? false) {
                       createUser();
                     }
                   },
+                  style: ButtonStyle(
+                    textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 16)),
+                    padding: MaterialStateProperty.all(const EdgeInsets.all(16)),
+                  ),
                   child: const Text('Sign Up'),
                 ),
                 const Text("Already have an account?"),
                 TextButton(
                   onPressed: () {
                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                      return Login(context: context,);
+                      return Login(
+                        context: context,
+                      );
                     }));
                   },
                   child: const Text('Login'),
@@ -108,11 +117,17 @@ class SignUp extends StatelessWidget {
         );
 
         await getUserRef(uid).set(newUser);
-
         print('New User added successfully!');
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                        return const HomeScreen();
-                      }));
+        
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return const HomeScreen();
+            },
+          ),
+          (route) => false,
+        );
       } else {
         print('Failed to retrieve UID for the authenticated user.');
       }

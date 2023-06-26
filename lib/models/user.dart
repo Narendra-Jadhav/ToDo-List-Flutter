@@ -26,6 +26,17 @@ final class AppUser {
     );
   }
 
+  factory AppUser.fromMap({required String docId, required AppUser user}) {
+    return AppUser(
+      id: docId,
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'name': name,

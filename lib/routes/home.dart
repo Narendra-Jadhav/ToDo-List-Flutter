@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_list_app/components/note.dart';
-import 'package:to_do_list_app/routes/login.dart';
+import 'package:to_do_list_app/models/user.dart';
+import 'package:to_do_list_app/routes/welcome.dart';
 import 'package:to_do_list_app/services/user_service.dart';
 
 import '../models/task.dart';
@@ -20,12 +21,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final user = FirebaseAuth.instance.currentUser;
-    // final uid = user?.uid;
-    // if (uid != null) {
-    //   final username = getUserRef(uid).get().data();
-    // }
-
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
@@ -33,15 +28,26 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const Text('ToDo List'),
             const Spacer(),
-            const Text('Hello, Username'),
+            FutureBuilder<AppUser?>(
+              future: getName(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasData && snapshot.data != null) {
+                  return Text('Hello, ${snapshot.data!.name}');
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return const Text('Not a valid user');
+                }
+              },
+            ),
             const SizedBox(width: 20),
             IconButton(
               onPressed: () {
                 AuthService().signOut();
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                  return Login(
-                    context: context,
-                  );
+                  return const Welcome();
                 }));
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logged Out Successfully!')));
               },
@@ -145,5 +151,19 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       print('Task not added');
     }
+  }
+
+  Future<AppUser?> getName() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final uid = user?.uid;
+
+    if (uid != null) {
+      final userSnapshot = await getUserRef(uid).get();
+      final userData = userSnapshot.data();
+      if (userData != null) {
+        return AppUser.fromMap(docId: uid, user: userData);
+      }
+    }
+    return null;
   }
 }

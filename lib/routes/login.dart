@@ -47,12 +47,17 @@ class Login extends StatelessWidget {
                   obscureText: true,
                   decoration: const InputDecoration(labelText: 'Password'),
                 ),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
                     if (_loginFormKey.currentState?.validate() ?? false) {
                       loginUser();
                     }
                   },
+                  style: ButtonStyle(
+                    textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 16)),
+                    padding: MaterialStateProperty.all(const EdgeInsets.all(16)),
+                  ),
                   child: const Text('Login'),
                 ),
                 const Text("Don't have an account? Create One!"),
@@ -82,9 +87,15 @@ class Login extends StatelessWidget {
       await AuthService().loginWithEmailAndPassword(email, password);
       print('Logged In Successfully!');
 
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return const HomeScreen();
-      }));
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return const HomeScreen();
+          },
+        ),
+        (route) => false,
+      );
     } catch (e) {
       print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Enter correct credentials!')));

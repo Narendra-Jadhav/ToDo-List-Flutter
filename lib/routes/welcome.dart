@@ -28,29 +28,37 @@ class Welcome extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Text(
                   'ToDo List',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
                 ),
               ),
-              const SizedBox(height: 125),
+              const SizedBox(height: 100),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return Login(
                       context: context,
                     );
                   }));
                 },
+                style: ButtonStyle(
+                    textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 16)),
+                    padding: MaterialStateProperty.all(const EdgeInsets.all(16)),
+                  ),
                 child: const Text('Login'),
               ),
               const SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return SignUp(
                       context: context,
                     );
                   }));
                 },
+                style: ButtonStyle(
+                    textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 16)),
+                    padding: MaterialStateProperty.all(const EdgeInsets.all(16)),
+                  ),
                 child: const Text('Sign Up'),
               )
             ],
