@@ -6,7 +6,6 @@ import "package:to_do_list_app/routes/home.dart";
 import "package:to_do_list_app/routes/login.dart";
 import "package:to_do_list_app/routes/signup.dart";
 import "package:to_do_list_app/routes/welcome.dart";
-
 import "firebase_options.dart";
 
 void main() async {

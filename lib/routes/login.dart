@@ -101,7 +101,7 @@ class _LoginState extends State<Login> {
 
     try {
       await AuthService().loginWithEmailAndPassword(email, password);
-      print('Logged In Successfully!');
+      debugPrint('Logged In Successfully!');
 
       Navigator.pushAndRemoveUntil(
         widget.context,
@@ -113,7 +113,7 @@ class _LoginState extends State<Login> {
         (route) => false,
       );
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       ScaffoldMessenger.of(widget.context).showSnackBar(const SnackBar(content: Text('Enter correct credentials!')));
     }
   }

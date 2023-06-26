@@ -53,12 +53,6 @@ class _SignUpState extends State<SignUp> {
                 TextFormField(
                   controller: _nameController,
                   validator: (value) => value?.isEmpty ?? true ? 'Please enter your name' : null,
-                  // validator: (value) {
-                  // if (value == null || value.isEmpty) {
-                  //   return 'Please enter your name';
-                  // }
-                  // return null;
-                  // },
                   decoration: const InputDecoration(labelText: 'Name'),
                 ),
                 TextFormField(
@@ -135,7 +129,7 @@ class _SignUpState extends State<SignUp> {
         );
 
         await getUserRef(uid).set(newUser);
-        print('New User added successfully!');
+        debugPrint('New User added successfully!');
 
         Navigator.pushAndRemoveUntil(
           widget.context,
@@ -147,10 +141,10 @@ class _SignUpState extends State<SignUp> {
           (route) => false,
         );
       } else {
-        print('Failed to retrieve UID for the authenticated user.');
+        debugPrint('Failed to retrieve UID for the authenticated user.');
       }
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       ScaffoldMessenger.of(widget.context).showSnackBar(const SnackBar(content: Text('Enter correct credentials!')));
     }
   }
