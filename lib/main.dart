@@ -1,17 +1,17 @@
-import "package:firebase_auth/firebase_auth.dart";
 import "package:firebase_core/firebase_core.dart";
 import "package:flutter/material.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:google_fonts/google_fonts.dart";
+import "package:to_do_list_app/firebase_options.dart";
 import "package:to_do_list_app/routes/home.dart";
 import "package:to_do_list_app/routes/login.dart";
 import "package:to_do_list_app/routes/signup.dart";
 import "package:to_do_list_app/routes/welcome.dart";
-import "firebase_options.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -19,26 +19,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'ToDo List',
-      initialRoute: '/',
+      home: const Welcome(),
       routes: {
-        '/': (context) {
-          if (user != null) {
-            return const HomeScreen();
-          } else {
-            return const Welcome();
-          }
-        },
-        '/signup': (context) => SignUp(
-              context: context,
-            ),
-        '/login': (context) => Login(
-              context: context,
-            ),
+        '/home': (context) => const HomeScreen(),
+        '/signup': (context) => const SignUp(),
+        '/login': (context) => const Login(),
       },
       theme: ThemeData(
         colorScheme: ColorScheme.light(primary: Colors.amber[700]!),

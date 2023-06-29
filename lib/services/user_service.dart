@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-import '../models/user.dart';
+import 'package:to_do_list_app/models/user.dart';
 
 final authProvider = StreamProvider((ref) => FirebaseAuth.instance.authStateChanges());
 

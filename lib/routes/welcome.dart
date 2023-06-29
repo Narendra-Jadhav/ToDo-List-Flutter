@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_list_app/routes/login.dart';
-import 'package:to_do_list_app/routes/signup.dart';
 
 class Welcome extends StatelessWidget {
   const Welcome({super.key});
@@ -10,8 +8,7 @@ class Welcome extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(title: const Text('ToDo List')),
-      body: Align(
-        alignment: Alignment.center,
+      body: Center(
         child: Container(
           width: 400,
           height: 500,
@@ -24,41 +21,27 @@ class Welcome extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'ToDo List',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
-                ),
+              const Text(
+                'ToDo List',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
               ),
               const SizedBox(height: 100),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return Login(
-                      context: context,
-                    );
-                  }));
-                },
-                style: ButtonStyle(
-                    textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 16)),
-                    padding: MaterialStateProperty.all(const EdgeInsets.all(16)),
-                  ),
+                onPressed: () => Navigator.pushNamed(context, '/login'),
+                style: ElevatedButton.styleFrom(
+                  textStyle: const TextStyle(fontSize: 16),
+                  padding: const EdgeInsets.all(16),
+                ),
                 child: const Text('Login'),
               ),
               const SizedBox(height: 50),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return SignUp(
-                      context: context,
-                    );
-                  }));
-                },
-                style: ButtonStyle(
-                    textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 16)),
-                    padding: MaterialStateProperty.all(const EdgeInsets.all(16)),
-                  ),
+                onPressed: () => Navigator.pushNamed(context, '/signup'),
+                style: ElevatedButton.styleFrom(
+                  textStyle: const TextStyle(fontSize: 16),
+                  padding: const EdgeInsets.all(16),
+                ),
                 child: const Text('Sign Up'),
               )
             ],

@@ -27,7 +27,11 @@ class CreateTask extends StatelessWidget {
         );
 
         debugPrint('Task added!');
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Task added!')));
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Task added!'),
+          backgroundColor: Colors.green,
+        ));
       } else {
         debugPrint('Task not added');
       }
