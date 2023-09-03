@@ -27,7 +27,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             IconButton(
               onPressed: () {
                 AuthService().signOut();
-                Navigator.pushReplacementNamed(context, '/');
+                Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logged Out Successfully!')));
               },
               icon: const Icon(Icons.logout, color: Colors.white),

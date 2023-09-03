@@ -17,7 +17,18 @@ class Note extends ConsumerWidget {
     final uid = user?.uid;
     return tasksSnapshot.when(
       data: (tasks) {
-        if (tasks == null) return const Text('Not authenticated');
+        if (tasks == null) {
+          return const Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Not Authenticated! Please Login!',
+                style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold, color: Colors.red),
+              ),
+            ),
+          );
+        }
         if (tasks.isEmpty) {
           // Handle the case when there are no tasks
           return const Padding(
